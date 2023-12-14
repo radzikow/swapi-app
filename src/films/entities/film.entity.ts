@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Species } from '../../species/entities/species.entity';
 import { Planet } from '../../planets/entities/planet.entity';
+import { Vehicle } from '../../vehicles/entities/vehicle.entity';
 
 @ObjectType()
 export class Film {
@@ -31,8 +32,11 @@ export class Film {
   // @Field((type) => [Starship])
   // starships: Starship[];
 
-  // @Field({ description: 'List of vehicles api urls' })
-  // vehicles: string[];
+  @Field(() => [Vehicle], {
+    description: 'List of vehicles',
+    nullable: 'items',
+  })
+  vehicles: Vehicle[];
 
   @Field(() => [Species], {
     description: 'List of species',

@@ -7,6 +7,7 @@ import { join } from 'path';
 import { FilmsModule } from './films/films.module';
 import { SpeciesModule } from './species/species.module';
 import { PlanetsModule } from './planets/planets.module';
+import { VehiclesModule } from './vehicles/vehicles.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PlanetsModule } from './planets/planets.module';
     FilmsModule,
     SpeciesModule,
     PlanetsModule,
+    VehiclesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
