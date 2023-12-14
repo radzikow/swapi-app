@@ -12,7 +12,7 @@ export class SpeciesResolver {
     return results;
   }
 
-  @Query(() => Species, { name: 'speciesById' })
+  @Query(() => Species, { name: 'specie' })
   async getSpeciesById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Species> {
