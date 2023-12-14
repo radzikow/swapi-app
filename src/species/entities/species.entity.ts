@@ -32,9 +32,6 @@ export class Species {
   @Field({ description: 'Language' })
   language: string;
 
-  // @Field((type) => [People])
-  // people: People[];
-
   // @Field((type) => [Film])
   // films: Film[];
 }

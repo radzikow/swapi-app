@@ -8,6 +8,7 @@ import { FilmsModule } from './films/films.module';
 import { SpeciesModule } from './species/species.module';
 import { PlanetsModule } from './planets/planets.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
+import { StarshipsModule } from './starships/starships.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { VehiclesModule } from './vehicles/vehicles.module';
     SpeciesModule,
     PlanetsModule,
     VehiclesModule,
+    StarshipsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
