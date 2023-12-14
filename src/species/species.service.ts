@@ -1,33 +1,33 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
-import { AxiosError } from 'axios';
-import { catchError, firstValueFrom } from 'rxjs';
-import { Film } from './entities/film.entity';
 import { ApiResponse } from '../common/types/api-response.type';
+import { Species } from './entities/species.entity';
+import { catchError, firstValueFrom } from 'rxjs';
+import { AxiosError } from 'axios';
 
 @Injectable()
-export class FilmsService {
-  private readonly logger = new Logger(FilmsService.name);
+export class SpeciesService {
+  private readonly logger = new Logger(SpeciesService.name);
   constructor(private readonly httpService: HttpService) {}
 
-  async getFilms(): Promise<ApiResponse<Film>> {
+  async getSpecies(): Promise<ApiResponse<Species>> {
     const { data } = await firstValueFrom(
-      this.httpService.get('https://swapi.dev/api/films').pipe(
+      this.httpService.get('https://swapi.dev/api/species').pipe(
         catchError((error: AxiosError) => {
           this.logger.error(error.response.data);
-          throw 'An error happened while fetching films!';
+          throw 'An error happened while fetching species!';
         }),
       ),
     );
     return data;
   }
 
-  async getFilmById(id: number): Promise<Film> {
+  async getSpeciesById(id: number): Promise<Species> {
     const { data } = await firstValueFrom(
-      this.httpService.get<any>(`https://swapi.dev/api/films/${id}`).pipe(
+      this.httpService.get<any>(`https://swapi.dev/api/species/${id}`).pipe(
         catchError((error: AxiosError) => {
           this.logger.error(error.response.data);
-          throw 'An error happened while fetching films!';
+          throw 'An error happened while fetching species!';
         }),
       ),
     );

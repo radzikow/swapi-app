@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { FilmsModule } from './films/films.module';
+import { SpeciesModule } from './species/species.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FilmsModule } from './films/films.module';
       sortSchema: true,
     }),
     FilmsModule,
+    SpeciesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
