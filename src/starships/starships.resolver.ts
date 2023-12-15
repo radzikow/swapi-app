@@ -20,8 +20,11 @@ export class StarshipsResolver {
   ) {}
 
   @Query(() => [Starship], { name: 'starships' })
-  async getStarships(): Promise<Starship[]> {
-    const { results } = await this.starshipsService.getStarships();
+  async getStarships(
+    @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
+    @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
+  ): Promise<Starship[]> {
+    const { results } = await this.starshipsService.getAll(skip, take);
     return results;
   }
 
@@ -29,7 +32,7 @@ export class StarshipsResolver {
   async getStarshipById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Starship> {
-    return this.starshipsService.getStarshipById(id);
+    return this.starshipsService.getById(id);
   }
 
   @ResolveField(() => [Film])
