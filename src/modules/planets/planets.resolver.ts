@@ -9,7 +9,7 @@ import {
 import { PlanetsService } from './planets.service';
 import { Planet } from './entities/planet.entity';
 import { Film } from '../films/entities/film.entity';
-import { getIdFromUrl } from '../common/utilities/get-id-from-url.utility';
+import { getIdFromUrl } from '../../common/utilities/get-id-from-url.utility';
 import { FilmsService } from '../films/films.service';
 
 @Resolver(() => Planet)

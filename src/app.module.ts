@@ -4,11 +4,11 @@ import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
-import { FilmsModule } from './films/films.module';
-import { SpeciesModule } from './species/species.module';
-import { PlanetsModule } from './planets/planets.module';
-import { VehiclesModule } from './vehicles/vehicles.module';
-import { StarshipsModule } from './starships/starships.module';
+import { FilmsModule } from './modules/films/films.module';
+import { SpeciesModule } from './modules/species/species.module';
+import { PlanetsModule } from './modules/planets/planets.module';
+import { VehiclesModule } from './modules/vehicles/vehicles.module';
+import { StarshipsModule } from './modules/starships/starships.module';
 
 @Module({
   imports: [

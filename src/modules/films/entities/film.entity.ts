@@ -1,5 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Pagination } from '../../common/entity/pagination.entity';
+import { Pagination } from '../../../common/entity/pagination.entity';
 import { Species } from '../../species/entities/species.entity';
 import { Planet } from '../../planets/entities/planet.entity';
 import { Vehicle } from '../../vehicles/entities/vehicle.entity';
