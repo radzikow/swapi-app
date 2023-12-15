@@ -1,8 +1,12 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Film } from '../../films/entities/film.entity';
+import { Pagination } from '../../common/entity/pagination.entity';
 
 @ObjectType()
-export class Vehicle {
+export class Vehicle extends Pagination {
+  @Field(() => Int, { description: 'Identity number' })
+  id: number;
+
   @Field({ description: 'Vehicle name' })
   name: string;
 

@@ -20,8 +20,11 @@ export class VehiclesResolver {
   ) {}
 
   @Query(() => [Vehicle], { name: 'vehicles' })
-  async getVehicles(): Promise<Vehicle[]> {
-    const { results } = await this.vehiclesService.getVehicles();
+  async getVehicles(
+    @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
+    @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
+  ): Promise<Vehicle[]> {
+    const { results } = await this.vehiclesService.getAll(skip, take);
     return results;
   }
 
@@ -29,7 +32,7 @@ export class VehiclesResolver {
   async getVehicleById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Vehicle> {
-    return this.vehiclesService.getVehicleById(id);
+    return this.vehiclesService.getById(id);
   }
 
   @ResolveField(() => [Film])
