@@ -1,33 +1,37 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Film } from '../../films/entities/film.entity';
+import { Pagination } from '../../common/entity/pagination.entity';
 
 @ObjectType()
-export class Planet {
-  @Field()
+export class Planet extends Pagination {
+  @Field(() => Int, { description: 'Identity number' })
+  id: number;
+
+  @Field({ description: 'Planet name' })
   name: string;
 
-  @Field()
+  @Field({ description: 'Planet rotation period' })
   rotation_period: string;
 
-  @Field()
+  @Field({ description: 'Planet orbital period' })
   orbital_period: string;
 
-  @Field()
+  @Field({ description: 'Planet diameter' })
   diameter: string;
 
-  @Field()
+  @Field({ description: 'Planet climate' })
   climate: string;
 
-  @Field()
+  @Field({ description: 'Planet gravity' })
   gravity: string;
 
-  @Field()
+  @Field({ description: 'Planet terrain' })
   terrain: string;
 
-  @Field()
+  @Field({ description: 'Planet surface water' })
   surface_water: string;
 
-  @Field()
+  @Field({ description: 'Planet population' })
   population: string;
 
   @Field(() => [Film], {

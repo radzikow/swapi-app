@@ -10,7 +10,7 @@ import { PlanetsService } from './planets.service';
 import { Planet } from './entities/planet.entity';
 import { Film } from '../films/entities/film.entity';
 import { getIdFromUrl } from '../common/utilities/get-id-from-url.utility';
-import { FilmsService } from 'src/films/films.service';
+import { FilmsService } from '../films/films.service';
 
 @Resolver(() => Planet)
 export class PlanetsResolver {
@@ -20,8 +20,11 @@ export class PlanetsResolver {
   ) {}
 
   @Query(() => [Planet], { name: 'planets' })
-  async getFilms(): Promise<Planet[]> {
-    const { results } = await this.planetsService.getPlanets();
+  async getFilms(
+    @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
+    @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
+  ): Promise<Planet[]> {
+    const { results } = await this.planetsService.getPlanets(skip, take);
     return results;
   }
 
