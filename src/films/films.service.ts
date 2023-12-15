@@ -1,36 +1,12 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
-import { AxiosError } from 'axios';
-import { catchError, firstValueFrom } from 'rxjs';
+import { Injectable } from '@nestjs/common';
 import { Film } from './entities/film.entity';
-import { ApiResponse } from '../common/types/api-response.type';
+import { Resource } from 'src/common/enums/resource.enum';
+import { GenericEntityService } from 'src/shared/generic-entity.service';
 
 @Injectable()
-export class FilmsService {
-  private readonly logger = new Logger(FilmsService.name);
-  constructor(private readonly httpService: HttpService) {}
-
-  async getFilms(): Promise<ApiResponse<Film>> {
-    const { data } = await firstValueFrom(
-      this.httpService.get('https://swapi.dev/api/films').pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          throw 'An error happened while fetching films!';
-        }),
-      ),
-    );
-    return data;
-  }
-
-  async getFilmById(id: number): Promise<Film> {
-    const { data } = await firstValueFrom(
-      this.httpService.get<any>(`https://swapi.dev/api/films/${id}`).pipe(
-        catchError((error: AxiosError) => {
-          this.logger.error(error.response.data);
-          throw 'An error happened while fetching films!';
-        }),
-      ),
-    );
-    return data;
+export class FilmsService extends GenericEntityService<Film> {
+  constructor(protected readonly httpService: HttpService) {
+    super(httpService, Resource.Films);
   }
 }

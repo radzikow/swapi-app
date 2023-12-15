@@ -40,7 +40,7 @@ export class StarshipsResolver {
     );
 
     return Promise.all(
-      filmsIds.map(async (id) => await this.filmsService.getFilmById(+id)),
+      filmsIds.map(async (id) => await this.filmsService.getById(+id)),
     );
   }
 }

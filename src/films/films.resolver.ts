@@ -20,8 +20,11 @@ export class FilmsResolver {
   ) {}
 
   @Query(() => [Film], { name: 'films' })
-  async getFilms(): Promise<Film[]> {
-    const { results } = await this.filmsService.getFilms();
+  async getFilms(
+    @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
+    @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
+  ): Promise<Film[]> {
+    const { results } = await this.filmsService.getAll(skip, take);
     return results;
   }
 
@@ -29,7 +32,7 @@ export class FilmsResolver {
   async getFilmById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Film> {
-    return this.filmsService.getFilmById(id);
+    return this.filmsService.getById(id);
   }
 
   @ResolveField(() => [Species])

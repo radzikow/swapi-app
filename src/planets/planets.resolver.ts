@@ -20,7 +20,7 @@ export class PlanetsResolver {
   ) {}
 
   @Query(() => [Planet], { name: 'planets' })
-  async getFilms(
+  async getPlanets(
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Planet[]> {
@@ -43,7 +43,7 @@ export class PlanetsResolver {
     );
 
     return Promise.all(
-      filmsIds.map(async (id) => await this.filmsService.getFilmById(+id)),
+      filmsIds.map(async (id) => await this.filmsService.getById(+id)),
     );
   }
 }
