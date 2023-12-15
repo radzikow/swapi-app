@@ -21,10 +21,11 @@ export class VehiclesResolver {
 
   @Query(() => [Vehicle], { name: 'vehicles' })
   async getVehicles(
+    @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Vehicle[]> {
-    const { results } = await this.vehiclesService.getAll(skip, take);
+    const { results } = await this.vehiclesService.getAll(search, skip, take);
     return results;
   }
 

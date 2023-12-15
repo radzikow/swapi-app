@@ -21,10 +21,11 @@ export class StarshipsResolver {
 
   @Query(() => [Starship], { name: 'starships' })
   async getStarships(
+    @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Starship[]> {
-    const { results } = await this.starshipsService.getAll(skip, take);
+    const { results } = await this.starshipsService.getAll(search, skip, take);
     return results;
   }
 

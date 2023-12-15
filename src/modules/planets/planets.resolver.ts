@@ -21,10 +21,11 @@ export class PlanetsResolver {
 
   @Query(() => [Planet], { name: 'planets' })
   async getPlanets(
+    @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Planet[]> {
-    const { results } = await this.planetsService.getAll(skip, take);
+    const { results } = await this.planetsService.getAll(search, skip, take);
     return results;
   }
 

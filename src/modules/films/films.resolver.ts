@@ -21,10 +21,11 @@ export class FilmsResolver {
 
   @Query(() => [Film], { name: 'films' })
   async getFilms(
+    @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Film[]> {
-    const { results } = await this.filmsService.getAll(skip, take);
+    const { results } = await this.filmsService.getAll(search, skip, take);
     return results;
   }
 
