@@ -43,9 +43,7 @@ export class FilmsResolver {
     );
 
     return Promise.all(
-      speciesIds.map(
-        async (id) => await this.speciesService.getSpeciesById(+id),
-      ),
+      speciesIds.map(async (id) => await this.speciesService.getById(+id)),
     );
   }
 }

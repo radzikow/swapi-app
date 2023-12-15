@@ -1,37 +1,45 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Film } from '../../films/entities/film.entity';
+import { Pagination } from '../../common/entity/pagination.entity';
 
 @ObjectType()
-export class Species {
-  @Field({ description: 'Name' })
+export class Species extends Pagination {
+  @Field(() => Int, { description: 'Identity number' })
+  id: number;
+
+  @Field({ description: 'Species name' })
   name: string;
 
-  @Field({ description: 'Classification' })
+  @Field({ description: 'Species classification' })
   classification: string;
 
-  @Field({ description: 'Designation' })
+  @Field({ description: 'Species designation' })
   designation: string;
 
-  @Field({ description: 'Average height' })
+  @Field({ description: 'Species average height' })
   average_height: string;
 
-  @Field({ description: 'List of skin colors' })
+  @Field({ description: 'Species skin colors' })
   skin_colors: string;
 
-  @Field({ description: 'List of hair colors' })
+  @Field({ description: 'Species hair colors' })
   hair_colors: string;
 
-  @Field({ description: 'List of eye colors' })
+  @Field({ description: 'Species eye colors' })
   eye_colors: string;
 
-  @Field({ description: 'Average lifespan' })
+  @Field({ description: 'Species average lifespan' })
   average_lifespan: string;
 
-  @Field({ description: 'Homeworld api url' })
+  @Field({ description: 'Species homeworld api url' })
   homeworld: string;
 
-  @Field({ description: 'Language' })
+  @Field({ description: 'Species language' })
   language: string;
 
-  // @Field((type) => [Film])
-  // films: Film[];
+  @Field(() => [Film], {
+    description: 'List of films',
+    nullable: 'items',
+  })
+  films: Film[];
 }
