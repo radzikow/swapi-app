@@ -24,7 +24,7 @@ export class PlanetsResolver {
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Planet[]> {
-    const { results } = await this.planetsService.getPlanets(skip, take);
+    const { results } = await this.planetsService.getAll(skip, take);
     return results;
   }
 
@@ -32,7 +32,7 @@ export class PlanetsResolver {
   async getPlanetById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Planet> {
-    return this.planetsService.getPlanetById(id);
+    return this.planetsService.getById(id);
   }
 
   @ResolveField(() => [Film])
