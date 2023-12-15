@@ -3,7 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import {
   ApiResponse,
   FormattedApiResponse,
-  TimestampsAndId,
+  TimestampsAndIdentifier,
   TimestampsAndUrl,
 } from '../common/types/api-response.type';
 import { catchError, firstValueFrom, map } from 'rxjs';
@@ -74,7 +74,7 @@ export class PlanetsService {
     return await firstValueFrom(
       this.httpService.get<any>(`https://swapi.dev/api/planets/${id}`).pipe(
         map((axiosResponse) => {
-          const formattedPlanet: Planet & TimestampsAndId = {
+          const formattedPlanet: Planet & TimestampsAndIdentifier = {
             ...axiosResponse.data,
             id: parseInt(getIdFromUrl(axiosResponse.data.url)),
           };

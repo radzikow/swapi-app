@@ -7,7 +7,7 @@ type Url = {
   url: string;
 };
 
-type Id = {
+type Identifier = {
   id: number;
 };
 
@@ -20,10 +20,10 @@ export type ApiResponse<T> = {
   results: (T & TimestampsAndUrl)[];
 };
 
-export type TimestampsAndId = Timestamps & Id;
+export type TimestampsAndIdentifier = Timestamps & Identifier;
 
 export type FormattedApiResponse<T> = {
-  results: (T & TimestampsAndId)[];
+  results: (T & TimestampsAndIdentifier)[];
   take: number;
   skip: number;
   total: number;
