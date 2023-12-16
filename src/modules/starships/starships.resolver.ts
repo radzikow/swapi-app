@@ -10,7 +10,6 @@ import { StarshipsService } from './starships.service';
 import { FilmsService } from '../films/films.service';
 import { Starship } from './entities/starship.entity';
 import { Film } from '../films/entities/film.entity';
-import { getIdFromUrl } from '../../common/utilities/url.utility';
 import { Resource } from 'src/common/enums/resource.enum';
 import { CacheService } from 'src/shared/cache/cache.service';
 import { GenericEntityResolver } from 'src/shared/generic-entity.resolver';
@@ -93,15 +92,11 @@ export class StarshipsResolver extends GenericEntityResolver {
     return data;
   }
 
-  @ResolveField(() => [Film])
+  @ResolveField(() => [Film], { name: 'films' })
   async films(@Parent() starship: Starship): Promise<Film[]> {
-    const { films: filmsUrls } = starship;
-    const filmsIds = filmsUrls.map((url) =>
-      getIdFromUrl(url as unknown as string),
-    );
-
-    return Promise.all(
-      filmsIds.map(async (id) => await this.filmsService.getById(+id)),
+    return this.resolveEntities<Film>(
+      starship.films as unknown as string[],
+      this.filmsService.getById.bind(this.filmsService),
     );
   }
 }

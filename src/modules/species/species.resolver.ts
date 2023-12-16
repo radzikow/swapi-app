@@ -9,7 +9,6 @@ import {
 import { SpeciesService } from './species.service';
 import { Species } from './entities/species.entity';
 import { Film } from '../films/entities/film.entity';
-import { getIdFromUrl } from '../../common/utilities/url.utility';
 import { FilmsService } from '../films/films.service';
 import { GenericEntityResolver } from 'src/shared/generic-entity.resolver';
 import { Resource } from 'src/common/enums/resource.enum';
@@ -94,15 +93,11 @@ export class SpeciesResolver extends GenericEntityResolver {
     return data;
   }
 
-  @ResolveField(() => [Film])
+  @ResolveField(() => [Film], { name: 'films' })
   async films(@Parent() species: Species): Promise<Film[]> {
-    const { films: filmsUrls } = species;
-    const filmsIds = filmsUrls.map((url) =>
-      getIdFromUrl(url as unknown as string),
-    );
-
-    return Promise.all(
-      filmsIds.map(async (id) => await this.filmsService.getById(+id)),
+    return this.resolveEntities<Film>(
+      species.films as unknown as string[],
+      this.filmsService.getById.bind(this.filmsService),
     );
   }
 }

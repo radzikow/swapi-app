@@ -10,7 +10,6 @@ import { FilmsService } from './films.service';
 import { Film } from './entities/film.entity';
 import { Species } from '../species/entities/species.entity';
 import { SpeciesService } from '../species/species.service';
-import { getIdFromUrl } from '../../common/utilities/url.utility';
 import { getUniqueWordsWithOccurrencesFromOpeningCrawls } from './utilities/films.utility';
 import { WordOccurrence } from './entities/word-occurrence.entity';
 import { CacheService } from 'src/shared/cache/cache.service';
@@ -97,16 +96,11 @@ export class FilmsResolver extends GenericEntityResolver {
     return data;
   }
 
-  @ResolveField(() => [Species])
+  @ResolveField(() => [Species], { name: 'species' })
   async species(@Parent() film: Film): Promise<Species[]> {
-    const { species: speciesUrls } = film;
-
-    const speciesIds = speciesUrls.map((url) =>
-      getIdFromUrl(url as unknown as string),
-    );
-
-    return Promise.all(
-      speciesIds.map(async (id) => await this.speciesService.getById(+id)),
+    return this.resolveEntities<Species>(
+      film.species as unknown as string[],
+      this.speciesService.getById.bind(this.speciesService),
     );
   }
 

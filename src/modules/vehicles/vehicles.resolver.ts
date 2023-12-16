@@ -10,7 +10,6 @@ import { VehiclesService } from './vehicles.service';
 import { Vehicle } from './entities/vehicle.entity';
 import { FilmsService } from '../films/films.service';
 import { Film } from '../films/entities/film.entity';
-import { getIdFromUrl } from '../../common/utilities/url.utility';
 import { GenericEntityResolver } from 'src/shared/generic-entity.resolver';
 import { Resource } from 'src/common/enums/resource.enum';
 import { CacheService } from 'src/shared/cache/cache.service';
@@ -93,15 +92,11 @@ export class VehiclesResolver extends GenericEntityResolver {
     return data;
   }
 
-  @ResolveField(() => [Film])
+  @ResolveField(() => [Film], { name: 'films' })
   async films(@Parent() vehicle: Vehicle): Promise<Film[]> {
-    const { films: filmsUrls } = vehicle;
-    const filmsIds = filmsUrls.map((url) =>
-      getIdFromUrl(url as unknown as string),
-    );
-
-    return Promise.all(
-      filmsIds.map(async (id) => await this.filmsService.getById(+id)),
+    return this.resolveEntities<Film>(
+      vehicle.films as unknown as string[],
+      this.filmsService.getById.bind(this.filmsService),
     );
   }
 }
