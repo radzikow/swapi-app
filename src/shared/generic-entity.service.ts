@@ -10,6 +10,8 @@ import { catchError, firstValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios';
 import { getIdFromUrl } from '../common/utilities/url.utility';
 
+const SWAPI_URL = 'https://swapi.dev/api';
+
 @Injectable()
 export class GenericEntityService<T> {
   private readonly logger = new Logger(this.entityName);
@@ -24,7 +26,7 @@ export class GenericEntityService<T> {
     skip: number,
     take: number,
   ): Promise<FormattedApiResponse<T>> {
-    const baseUrl = `https://swapi.dev/api/${this.entityName}/`;
+    const baseUrl = `${SWAPI_URL}/${this.entityName}/`;
     let formattedUrl = '';
 
     const results: (T & TimestampsAndIdentifier)[] = [];
@@ -101,21 +103,19 @@ export class GenericEntityService<T> {
 
   async getById(id: number): Promise<T> {
     return await firstValueFrom(
-      this.httpService
-        .get<any>(`https://swapi.dev/api/${this.entityName}/${id}`)
-        .pipe(
-          map((axiosResponse) => {
-            const formattedResponse: T & TimestampsAndIdentifier = {
-              ...axiosResponse.data,
-              id: parseInt(getIdFromUrl(axiosResponse.data.url)),
-            };
-            return formattedResponse;
-          }),
-          catchError((error: AxiosError) => {
-            this.logger.error(error.response.data);
-            throw `An error happened while fetching ${this.entityName}!`;
-          }),
-        ),
+      this.httpService.get<any>(`${SWAPI_URL}/${this.entityName}/${id}`).pipe(
+        map((axiosResponse) => {
+          const formattedResponse: T & TimestampsAndIdentifier = {
+            ...axiosResponse.data,
+            id: parseInt(getIdFromUrl(axiosResponse.data.url)),
+          };
+          return formattedResponse;
+        }),
+        catchError((error: AxiosError) => {
+          this.logger.error(error.response.data);
+          throw `An error happened while fetching ${this.entityName}!`;
+        }),
+      ),
     );
   }
 }

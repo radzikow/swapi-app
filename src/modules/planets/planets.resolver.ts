@@ -19,7 +19,7 @@ import {
   setDataInCache,
 } from '../../common/utilities/cache.utility';
 
-const CACHE_TTL_SECONDS = 24 * 60 * 60;
+const CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
 @Resolver(() => Planet)
 export class PlanetsResolver {
