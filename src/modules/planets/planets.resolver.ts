@@ -16,7 +16,7 @@ import {
   getCachedData,
   setDataInCache,
 } from '../../common/utilities/cache.utility';
-import { GenericEntityResolver } from 'src/shared/generic-entity.resolver';
+import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 
 const CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 

@@ -12,13 +12,13 @@ import { Species } from '../species/entities/species.entity';
 import { SpeciesService } from '../species/species.service';
 import { getUniqueWordsWithOccurrencesFromOpeningCrawls } from './utilities/films.utility';
 import { WordOccurrence } from './entities/word-occurrence.entity';
-import { CacheService } from 'src/shared/cache/cache.service';
+import { CacheService } from '../../shared/cache/cache.service';
 import {
   getCachedData,
   setDataInCache,
-} from 'src/common/utilities/cache.utility';
-import { GenericEntityResolver } from 'src/shared/generic-entity.resolver';
-import { Resource } from 'src/common/enums/resource.enum';
+} from '../../common/utilities/cache.utility';
+import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
+import { Resource } from '../../common/enums/resource.enum';
 
 const CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 

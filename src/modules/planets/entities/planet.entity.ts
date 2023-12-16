@@ -1,7 +1,7 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Film } from '../../films/entities/film.entity';
 import { Pagination } from '../../../common/entity/pagination.entity';
-import { People } from 'src/modules/people/entities/people.entity';
+import { People } from '../../people/entities/people.entity';
 
 @ObjectType()
 export class Planet extends Pagination {

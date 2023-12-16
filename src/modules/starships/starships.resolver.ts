@@ -10,13 +10,13 @@ import { StarshipsService } from './starships.service';
 import { FilmsService } from '../films/films.service';
 import { Starship } from './entities/starship.entity';
 import { Film } from '../films/entities/film.entity';
-import { Resource } from 'src/common/enums/resource.enum';
-import { CacheService } from 'src/shared/cache/cache.service';
-import { GenericEntityResolver } from 'src/shared/generic-entity.resolver';
+import { Resource } from '../../common/enums/resource.enum';
+import { CacheService } from '../../shared/cache/cache.service';
+import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import {
   getCachedData,
   setDataInCache,
-} from 'src/common/utilities/cache.utility';
+} from '../../common/utilities/cache.utility';
 
 const CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 

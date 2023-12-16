@@ -6,7 +6,7 @@ import { PlanetsModule } from '../planets/planets.module';
 import { SpeciesModule } from '../species/species.module';
 import { VehiclesModule } from '../vehicles/vehicles.module';
 import { StarshipsModule } from '../starships/starships.module';
-import { CacheModule } from 'src/shared/cache/cache.module';
+import { CacheModule } from '../../shared/cache/cache.module';
 
 @Module({
   imports: [
