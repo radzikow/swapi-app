@@ -9,4 +9,9 @@ export class FilmsService extends GenericEntityService<Film> {
   constructor(protected readonly httpService: HttpService) {
     super(httpService, Resource.Films);
   }
+
+  async getOpeningCrawls(): Promise<string[]> {
+    const films = await this.getAll();
+    return films.results.map((film) => film.opening_crawl);
+  }
 }

@@ -22,9 +22,9 @@ export class GenericEntityService<T> {
   ) {}
 
   async getAll(
-    search: string,
-    skip: number,
-    take: number,
+    search: string = '',
+    skip: number = 0,
+    take: number = 10,
   ): Promise<FormattedApiResponse<T>> {
     const baseUrl = `${SWAPI_URL}/${this.entityName}/`;
     let formattedUrl = '';

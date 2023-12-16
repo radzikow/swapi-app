@@ -11,6 +11,8 @@ import { Film } from './entities/film.entity';
 import { Species } from '../species/entities/species.entity';
 import { SpeciesService } from '../species/species.service';
 import { getIdFromUrl } from '../../common/utilities/url.utility';
+import { getUniqueWordsWithOccurrencesFromOpeningCrawls } from './utilities/films.utility';
+import { WordOccurrence } from './entities/word-occurrence.entity';
 
 @Resolver(() => Film)
 export class FilmsResolver {
@@ -26,6 +28,7 @@ export class FilmsResolver {
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Film[]> {
     const { results } = await this.filmsService.getAll(search, skip, take);
+
     return results;
   }
 
@@ -39,6 +42,7 @@ export class FilmsResolver {
   @ResolveField(() => [Species])
   async species(@Parent() film: Film): Promise<Species[]> {
     const { species: speciesUrls } = film;
+
     const speciesIds = speciesUrls.map((url) =>
       getIdFromUrl(url as unknown as string),
     );
@@ -46,5 +50,15 @@ export class FilmsResolver {
     return Promise.all(
       speciesIds.map(async (id) => await this.speciesService.getById(+id)),
     );
+  }
+
+  @Query(() => [WordOccurrence], { name: 'uniqueWordsInOpeningCrawls' })
+  async getUniqueWordsInOpeningCrawls(): Promise<WordOccurrence[]> {
+    const openingCrawls = await this.filmsService.getOpeningCrawls();
+
+    const uniqueWords =
+      getUniqueWordsWithOccurrencesFromOpeningCrawls(openingCrawls);
+
+    return uniqueWords;
   }
 }
