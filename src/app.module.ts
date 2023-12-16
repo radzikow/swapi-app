@@ -11,6 +11,7 @@ import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { StarshipsModule } from './modules/starships/starships.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CacheModule } from './shared/cache/cache.module';
+import { PeopleModule } from './modules/people/people.module';
 
 @Module({
   imports: [
@@ -19,13 +20,14 @@ import { CacheModule } from './shared/cache/cache.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
     }),
+    MongooseModule.forRoot('mongodb://mongodb:27017/myDatabase'),
     FilmsModule,
     SpeciesModule,
     PlanetsModule,
     VehiclesModule,
     StarshipsModule,
-    MongooseModule.forRoot('mongodb://mongodb:27017/myDatabase'),
     CacheModule,
+    PeopleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

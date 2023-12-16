@@ -29,13 +29,13 @@ export class Film extends Pagination {
   release_date: string;
 
   @Field(() => [Planet], {
-    description: 'List of planets in film',
+    description: 'List of planets',
     nullable: 'items',
   })
   planets: Planet[];
 
   @Field(() => [Starship], {
-    description: 'List of starships in film',
+    description: 'List of starships',
     nullable: 'items',
   })
   starships: Starship[];
@@ -47,7 +47,7 @@ export class Film extends Pagination {
   vehicles: Vehicle[];
 
   @Field(() => [Species], {
-    description: 'List of species in film',
+    description: 'List of species',
     nullable: 'items',
   })
   species: Species[];

@@ -1,17 +1,12 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { Film } from './entities/film.entity';
+import { People } from './entities/people.entity';
 import { Resource } from '../../common/enums/resource.enum';
 import { GenericEntityService } from '../../shared/generic-entity.service';
 
 @Injectable()
-export class FilmsService extends GenericEntityService<Film> {
+export class PeopleService extends GenericEntityService<People> {
   constructor(protected readonly httpService: HttpService) {
-    super(httpService, Resource.Films);
-  }
-
-  async getOpeningCrawls(): Promise<string[]> {
-    const films = await this.getAll();
-    return films.results.map((film) => film.opening_crawl);
+    super(httpService, Resource.People);
   }
 }

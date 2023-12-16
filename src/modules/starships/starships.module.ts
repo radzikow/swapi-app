@@ -6,5 +6,6 @@ import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [HttpModule],
   providers: [StarshipsResolver, StarshipsService],
+  exports: [StarshipsService],
 })
 export class StarshipsModule {}
