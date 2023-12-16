@@ -1,8 +1,8 @@
-// cache.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CachedResource } from './entities/cached-resource.entity';
+import { CachedData } from './dto/cached-data.dto';
 
 @Injectable()
 export class CacheService {
@@ -11,16 +11,18 @@ export class CacheService {
     private readonly cacheModel: Model<CachedResource>,
   ) {}
 
-  async get(key: string): Promise<string | null> {
+  async get<T>(key: string): Promise<CachedData<T> | null> {
     const cachedData = await this.cacheModel.findOne({
       key,
       expiresAt: { $gt: new Date() },
     });
 
-    return cachedData ? cachedData.value : null;
+    return cachedData
+      ? { data: cachedData.value as T, expiresAt: cachedData.expiresAt }
+      : null;
   }
 
-  async set(key: string, value: string, ttl: number): Promise<void> {
+  async set<T>(key: string, value: T, ttl: number): Promise<void> {
     const expiresAt = new Date(Date.now() + ttl * 1000);
 
     await this.cacheModel.updateOne(
