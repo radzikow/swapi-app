@@ -3,11 +3,15 @@ import { Injectable } from '@nestjs/common';
 import { Film } from './entities/film.entity';
 import { Resource } from '../../common/enums/resource.enum';
 import { GenericEntityService } from '../../shared/generic-entity.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FilmsService extends GenericEntityService<Film> {
-  constructor(protected readonly httpService: HttpService) {
-    super(httpService, Resource.Films);
+  constructor(
+    protected readonly httpService: HttpService,
+    protected readonly configService: ConfigService,
+  ) {
+    super(httpService, configService, Resource.Films);
   }
 
   async getOpeningCrawls(): Promise<string[]> {

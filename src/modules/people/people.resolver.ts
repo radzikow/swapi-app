@@ -23,12 +23,14 @@ import {
   getCachedData,
   setDataInCache,
 } from '../../common/utilities/cache.utility';
-
-const CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
+import { ConfigService } from '@nestjs/config';
 
 @Resolver(() => People)
 export class PeopleResolver extends GenericEntityResolver {
+  cacheTtlSeconds = this.configService.get<number>('cache.ttl_seconds');
+
   constructor(
+    private readonly configService: ConfigService,
     private readonly peopleService: PeopleService,
     private readonly filmsService: FilmsService,
     private readonly speciesService: SpeciesService,
@@ -67,7 +69,7 @@ export class PeopleResolver extends GenericEntityResolver {
       this.logger,
       cacheKey,
       data,
-      CACHE_TTL_SECONDS,
+      this.cacheTtlSeconds,
     );
 
     return data;
@@ -95,7 +97,7 @@ export class PeopleResolver extends GenericEntityResolver {
       this.logger,
       cacheKey,
       data,
-      CACHE_TTL_SECONDS,
+      this.cacheTtlSeconds,
     );
 
     return data;

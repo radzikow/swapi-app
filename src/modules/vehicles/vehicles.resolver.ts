@@ -17,12 +17,14 @@ import {
   getCachedData,
   setDataInCache,
 } from '../../common/utilities/cache.utility';
-
-const CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
+import { ConfigService } from '@nestjs/config';
 
 @Resolver(() => Vehicle)
 export class VehiclesResolver extends GenericEntityResolver {
+  cacheTtlSeconds = this.configService.get<number>('cache.ttl_seconds');
+
   constructor(
+    private readonly configService: ConfigService,
     private readonly vehiclesService: VehiclesService,
     private readonly filmsService: FilmsService,
     protected readonly cacheService: CacheService,
@@ -33,7 +35,8 @@ export class VehiclesResolver extends GenericEntityResolver {
   @Query(() => [Vehicle], { name: 'vehicles' })
   async getVehicles(
     @Args('search', { defaultValue: '' }) search: string,
-    @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
+    @Args('skip', { type: () => Int, defaultValue: 0 })
+    skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Vehicle[]> {
     const cacheKey = `vehicles:${search}:${skip}:${take}`;
@@ -58,7 +61,7 @@ export class VehiclesResolver extends GenericEntityResolver {
       this.logger,
       cacheKey,
       data,
-      CACHE_TTL_SECONDS,
+      this.cacheTtlSeconds,
     );
 
     return data;
@@ -86,7 +89,7 @@ export class VehiclesResolver extends GenericEntityResolver {
       this.logger,
       cacheKey,
       data,
-      CACHE_TTL_SECONDS,
+      this.cacheTtlSeconds,
     );
 
     return data;
