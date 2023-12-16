@@ -1,6 +1,7 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Film } from '../../films/entities/film.entity';
 import { Pagination } from '../../../common/entity/pagination.entity';
+import { People } from 'src/modules/people/entities/people.entity';
 
 @ObjectType()
 export class Planet extends Pagination {
@@ -33,6 +34,12 @@ export class Planet extends Pagination {
 
   @Field({ description: 'Planet population' })
   population: string;
+
+  @Field(() => [People], {
+    description: 'List of residents',
+    nullable: 'items',
+  })
+  residents: People[];
 
   @Field(() => [Film], {
     description: 'List of films',

@@ -18,8 +18,13 @@ import { Starship } from '../starships/entities/starship.entity';
 import { StarshipsService } from '../starships/starships.service';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import { Resource } from '../../common/enums/resource.enum';
-import { Planet } from '../planets/entities/planet.entity';
-import { PlanetsService } from '../planets/planets.service';
+import { CacheService } from 'src/shared/cache/cache.service';
+import {
+  getCachedData,
+  setDataInCache,
+} from 'src/common/utilities/cache.utility';
+
+const CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
 @Resolver(() => People)
 export class PeopleResolver extends GenericEntityResolver {
@@ -29,7 +34,7 @@ export class PeopleResolver extends GenericEntityResolver {
     private readonly speciesService: SpeciesService,
     private readonly vehiclesService: VehiclesService,
     private readonly starshipsService: StarshipsService,
-    private readonly planetsService: PlanetsService,
+    protected readonly cacheService: CacheService,
   ) {
     super(Resource.People);
   }
@@ -40,24 +45,60 @@ export class PeopleResolver extends GenericEntityResolver {
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<People[]> {
-    const { results } = await this.peopleService.getAll(search, skip, take);
+    const cacheKey = `people:${search}:${skip}:${take}`;
+    const cachedData = await getCachedData<People[]>(
+      this.cacheService,
+      this.logger,
+      cacheKey,
+    );
 
-    return results;
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const { results: data } = await this.peopleService.getAll(
+      search,
+      skip,
+      take,
+    );
+
+    await setDataInCache(
+      this.cacheService,
+      this.logger,
+      cacheKey,
+      data,
+      CACHE_TTL_SECONDS,
+    );
+
+    return data;
   }
 
   @Query(() => People, { name: 'person' })
   async getPeopleById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<People> {
-    return this.peopleService.getById(id);
-  }
-
-  @ResolveField(() => [Planet], { name: 'homeworld' })
-  async homeworld(@Parent() people: People): Promise<Planet> {
-    return this.resolveEntity<Planet>(
-      people.homeworld as unknown as string,
-      this.planetsService.getById.bind(this.planetsService),
+    const cacheKey = `person:${id}`;
+    const cachedData = await getCachedData<People>(
+      this.cacheService,
+      this.logger,
+      cacheKey,
     );
+
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const data = await this.peopleService.getById(id);
+
+    await setDataInCache(
+      this.cacheService,
+      this.logger,
+      cacheKey,
+      data,
+      CACHE_TTL_SECONDS,
+    );
+
+    return data;
   }
 
   @ResolveField(() => [Film], { name: 'films' })

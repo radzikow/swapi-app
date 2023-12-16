@@ -9,27 +9,26 @@ import {
 import { PlanetsService } from './planets.service';
 import { Planet } from './entities/planet.entity';
 import { Film } from '../films/entities/film.entity';
-import { getIdFromUrl } from '../../common/utilities/url.utility';
 import { FilmsService } from '../films/films.service';
 import { CacheService } from '../../shared/cache/cache.service';
-import { Logger } from '@nestjs/common';
 import { Resource } from '../../common/enums/resource.enum';
 import {
   getCachedData,
   setDataInCache,
 } from '../../common/utilities/cache.utility';
+import { GenericEntityResolver } from 'src/shared/generic-entity.resolver';
 
 const CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
 @Resolver(() => Planet)
-export class PlanetsResolver {
-  private readonly logger = new Logger(Resource.Planets);
-
+export class PlanetsResolver extends GenericEntityResolver {
   constructor(
     private readonly planetsService: PlanetsService,
     private readonly filmsService: FilmsService,
     private readonly cacheService: CacheService,
-  ) {}
+  ) {
+    super(Resource.Planets);
+  }
 
   @Query(() => [Planet], { name: 'planets' })
   async getPlanets(
@@ -93,15 +92,11 @@ export class PlanetsResolver {
     return data;
   }
 
-  @ResolveField(() => [Film])
+  @ResolveField(() => [Film], { name: 'films' })
   async films(@Parent() planet: Planet): Promise<Film[]> {
-    const { films: filmsUrls } = planet;
-    const filmsIds = filmsUrls.map((url) =>
-      getIdFromUrl(url as unknown as string),
-    );
-
-    return Promise.all(
-      filmsIds.map(async (id) => await this.filmsService.getById(+id)),
+    return this.resolveEntities<Film>(
+      planet.films as unknown as string[],
+      this.filmsService.getById.bind(this.filmsService),
     );
   }
 }

@@ -11,13 +11,25 @@ import { FilmsService } from '../films/films.service';
 import { Starship } from './entities/starship.entity';
 import { Film } from '../films/entities/film.entity';
 import { getIdFromUrl } from '../../common/utilities/url.utility';
+import { Resource } from 'src/common/enums/resource.enum';
+import { CacheService } from 'src/shared/cache/cache.service';
+import { GenericEntityResolver } from 'src/shared/generic-entity.resolver';
+import {
+  getCachedData,
+  setDataInCache,
+} from 'src/common/utilities/cache.utility';
+
+const CACHE_TTL_SECONDS = 24 * 60 * 60; // 24 hours
 
 @Resolver(() => Starship)
-export class StarshipsResolver {
+export class StarshipsResolver extends GenericEntityResolver {
   constructor(
     private readonly starshipsService: StarshipsService,
     private readonly filmsService: FilmsService,
-  ) {}
+    protected readonly cacheService: CacheService,
+  ) {
+    super(Resource.Starships);
+  }
 
   @Query(() => [Starship], { name: 'starships' })
   async getStarships(
@@ -25,15 +37,60 @@ export class StarshipsResolver {
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Starship[]> {
-    const { results } = await this.starshipsService.getAll(search, skip, take);
-    return results;
+    const cacheKey = `starships:${search}:${skip}:${take}`;
+    const cachedData = await getCachedData<Starship[]>(
+      this.cacheService,
+      this.logger,
+      cacheKey,
+    );
+
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const { results: data } = await this.starshipsService.getAll(
+      search,
+      skip,
+      take,
+    );
+
+    await setDataInCache(
+      this.cacheService,
+      this.logger,
+      cacheKey,
+      data,
+      CACHE_TTL_SECONDS,
+    );
+
+    return data;
   }
 
   @Query(() => Starship, { name: 'starship' })
   async getStarshipById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Starship> {
-    return this.starshipsService.getById(id);
+    const cacheKey = `starship:${id}`;
+    const cachedData = await getCachedData<Starship>(
+      this.cacheService,
+      this.logger,
+      cacheKey,
+    );
+
+    if (cachedData) {
+      return cachedData;
+    }
+
+    const data = await this.starshipsService.getById(id);
+
+    await setDataInCache(
+      this.cacheService,
+      this.logger,
+      cacheKey,
+      data,
+      CACHE_TTL_SECONDS,
+    );
+
+    return data;
   }
 
   @ResolveField(() => [Film])

@@ -4,7 +4,6 @@ import { Species } from '../../species/entities/species.entity';
 import { Vehicle } from '../../vehicles/entities/vehicle.entity';
 import { Starship } from '../../starships/entities/starship.entity';
 import { Film } from '../../films/entities/film.entity';
-import { Planet } from '../../planets/entities/planet.entity';
 
 @ObjectType()
 export class People extends Pagination {
@@ -35,8 +34,8 @@ export class People extends Pagination {
   @Field({ description: 'Person gender' })
   gender: string;
 
-  @Field({ description: 'Person homeworld (planet)' })
-  homeworld: Planet;
+  @Field({ description: 'Person homeworld' })
+  homeworld: string;
 
   @Field(() => [Film], {
     description: 'List of films',
