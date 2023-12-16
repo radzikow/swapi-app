@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+
+  # Mongodb service
+  mongodb:
+    container_name: mongodb
+    image: 'mongo:latest'
+    env_file:
+      - .env
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - mynet
+
+  # Swapi application service
+  swapi-app:
+    container_name: swapi-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    depends_on:
+      - mongodb
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT}:${API_PORT}"
+      - "${API_DEBUG_PORT}:9229"
+    volumes:
+      - "./:/app"
+      - "/app/node_modules"
+    networks:
+      - mynet
+
+networks:
+  mynet:
+    driver: bridge
+
+volumes:
+  mongodb_data:

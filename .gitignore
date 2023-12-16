@@ -36,3 +36,6 @@ lerna-debug.log*
 
 # GraphQL
 schema.gql
+
+# Other
+.env
