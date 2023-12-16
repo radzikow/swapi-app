@@ -26,4 +26,21 @@ export class GenericEntityResolver {
 
     return Promise.all(promises);
   }
+
+  async resolveEntity<T>(
+    url: string,
+    getById: (id: number) => Promise<T>,
+  ): Promise<T> {
+    const id = getIdFromUrl(url as unknown as string);
+
+    try {
+      return await getById(+id);
+    } catch (error) {
+      this.logger.error(
+        `Error occurred while fetching entity "${this.entityName}" with ID ${id}:`,
+        error.message,
+      );
+      return null;
+    }
+  }
 }

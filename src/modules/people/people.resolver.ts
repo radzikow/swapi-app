@@ -18,6 +18,8 @@ import { Starship } from '../starships/entities/starship.entity';
 import { StarshipsService } from '../starships/starships.service';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import { Resource } from '../../common/enums/resource.enum';
+import { Planet } from '../planets/entities/planet.entity';
+import { PlanetsService } from '../planets/planets.service';
 
 @Resolver(() => People)
 export class PeopleResolver extends GenericEntityResolver {
@@ -27,6 +29,7 @@ export class PeopleResolver extends GenericEntityResolver {
     private readonly speciesService: SpeciesService,
     private readonly vehiclesService: VehiclesService,
     private readonly starshipsService: StarshipsService,
+    private readonly planetsService: PlanetsService,
   ) {
     super(Resource.People);
   }
@@ -49,7 +52,15 @@ export class PeopleResolver extends GenericEntityResolver {
     return this.peopleService.getById(id);
   }
 
-  @ResolveField(() => [Film])
+  @ResolveField(() => [Planet], { name: 'homeworld' })
+  async homeworld(@Parent() people: People): Promise<Planet> {
+    return this.resolveEntity<Planet>(
+      people.homeworld as unknown as string,
+      this.planetsService.getById.bind(this.planetsService),
+    );
+  }
+
+  @ResolveField(() => [Film], { name: 'films' })
   async films(@Parent() people: People): Promise<Film[]> {
     return this.resolveEntities<Film>(
       people.films as unknown as string[],
@@ -57,7 +68,7 @@ export class PeopleResolver extends GenericEntityResolver {
     );
   }
 
-  @ResolveField(() => [Species])
+  @ResolveField(() => [Species], { name: 'species' })
   async species(@Parent() people: People): Promise<Species[]> {
     return this.resolveEntities<Species>(
       people.species as unknown as string[],
@@ -65,7 +76,7 @@ export class PeopleResolver extends GenericEntityResolver {
     );
   }
 
-  @ResolveField(() => [Vehicle])
+  @ResolveField(() => [Vehicle], { name: 'vehicles' })
   async vehicles(@Parent() people: People): Promise<Vehicle[]> {
     return this.resolveEntities<Vehicle>(
       people.vehicles as unknown as string[],
@@ -73,7 +84,7 @@ export class PeopleResolver extends GenericEntityResolver {
     );
   }
 
-  @ResolveField(() => [Starship])
+  @ResolveField(() => [Starship], { name: 'starships' })
   async starships(@Parent() people: People): Promise<Starship[]> {
     return this.resolveEntities<Starship>(
       people.starships as unknown as string[],
