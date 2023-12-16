@@ -10,6 +10,7 @@ import { PlanetsModule } from './modules/planets/planets.module';
 import { VehiclesModule } from './modules/vehicles/vehicles.module';
 import { StarshipsModule } from './modules/starships/starships.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { CacheModule } from './shared/cache/cache.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     VehiclesModule,
     StarshipsModule,
     MongooseModule.forRoot('mongodb://mongodb:27017/myDatabase'),
+    CacheModule,
   ],
   controllers: [AppController],
   providers: [AppService],
