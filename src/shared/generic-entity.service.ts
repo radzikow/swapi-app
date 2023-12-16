@@ -8,7 +8,7 @@ import {
 } from '../common/types/api-response.type';
 import { catchError, firstValueFrom, map } from 'rxjs';
 import { AxiosError } from 'axios';
-import { getIdFromUrl } from '../common/utilities/get-id-from-url.utility';
+import { getIdFromUrl } from '../common/utilities/url.utility';
 
 @Injectable()
 export class GenericEntityService<T> {

@@ -10,7 +10,7 @@ import { VehiclesService } from './vehicles.service';
 import { Vehicle } from './entities/vehicle.entity';
 import { FilmsService } from '../films/films.service';
 import { Film } from '../films/entities/film.entity';
-import { getIdFromUrl } from '../../common/utilities/get-id-from-url.utility';
+import { getIdFromUrl } from '../../common/utilities/url.utility';
 
 @Resolver(() => Vehicle)
 export class VehiclesResolver {

@@ -10,7 +10,7 @@ import { FilmsService } from './films.service';
 import { Film } from './entities/film.entity';
 import { Species } from '../species/entities/species.entity';
 import { SpeciesService } from '../species/species.service';
-import { getIdFromUrl } from '../../common/utilities/get-id-from-url.utility';
+import { getIdFromUrl } from '../../common/utilities/url.utility';
 
 @Resolver(() => Film)
 export class FilmsResolver {

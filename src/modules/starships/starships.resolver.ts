@@ -10,7 +10,7 @@ import { StarshipsService } from './starships.service';
 import { FilmsService } from '../films/films.service';
 import { Starship } from './entities/starship.entity';
 import { Film } from '../films/entities/film.entity';
-import { getIdFromUrl } from '../../common/utilities/get-id-from-url.utility';
+import { getIdFromUrl } from '../../common/utilities/url.utility';
 
 @Resolver(() => Starship)
 export class StarshipsResolver {
