@@ -13,4 +13,19 @@ export class PeopleService extends GenericEntityService<People> {
   ) {
     super(httpService, configService, Resource.People);
   }
+
+  async getCharacterNames(): Promise<string[]> {
+    const { results: people } = await this.getAll(
+      this.defaultSearch,
+      this.defaultPaginationSkip,
+      this.defaultPaginationTakeMax,
+    );
+    const characterNames: string[] = [];
+
+    people.forEach((person) => {
+      characterNames.push(person.name);
+    });
+
+    return characterNames;
+  }
 }

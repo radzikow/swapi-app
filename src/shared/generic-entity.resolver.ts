@@ -1,11 +1,19 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { getIdFromUrl } from '../common/utilities/url.utility';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GenericEntityResolver {
+  cacheTtlSeconds: number;
+
   protected readonly logger = new Logger(this.entityName);
 
-  constructor(private readonly entityName: string) {}
+  constructor(
+    protected readonly configService: ConfigService,
+    private readonly entityName: string,
+  ) {
+    this.cacheTtlSeconds = this.configService.get<number>('cache.ttl_seconds');
+  }
 
   async resolveEntities<T>(
     urls: string[],

@@ -15,7 +15,7 @@ export class FilmsService extends GenericEntityService<Film> {
   }
 
   async getOpeningCrawls(): Promise<string[]> {
-    const films = await this.getAll();
-    return films.results.map((film) => film.opening_crawl);
+    const { results: films } = await this.getAll();
+    return films.map((film) => film.opening_crawl.replace(/[\r\n]/g, ' '));
   }
 }

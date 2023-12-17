@@ -13,13 +13,11 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GenericEntityService<T> {
-  swapiUrl = this.configService.get<number>('swapi.url');
-  defaultPaginationSkip = this.configService.get<number>(
-    'default.pagination.skip',
-  );
-  defaultPaginationTake = this.configService.get<number>(
-    'swapi.pagination.take',
-  );
+  swapiUrl: string;
+  defaultPaginationSkip: number;
+  defaultPaginationTake: number;
+  defaultPaginationTakeMax: number;
+  defaultSearch: string;
 
   private readonly logger = new Logger(this.entityName);
 
@@ -27,7 +25,19 @@ export class GenericEntityService<T> {
     protected readonly httpService: HttpService,
     protected readonly configService: ConfigService,
     private readonly entityName: string,
-  ) {}
+  ) {
+    this.swapiUrl = this.configService.get<string>('swapi.url');
+    this.defaultPaginationSkip = this.configService.get<number>(
+      'default.pagination.skip',
+    );
+    this.defaultPaginationTake = this.configService.get<number>(
+      'default.pagination.take',
+    );
+    this.defaultPaginationTakeMax = this.configService.get<number>(
+      'default.pagination.takeMax',
+    );
+    this.defaultSearch = this.configService.get<string>('default.search');
+  }
 
   async getAll(
     search: string = '',

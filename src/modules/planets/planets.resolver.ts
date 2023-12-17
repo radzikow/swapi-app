@@ -21,15 +21,13 @@ import { ConfigService } from '@nestjs/config';
 
 @Resolver(() => Planet)
 export class PlanetsResolver extends GenericEntityResolver {
-  cacheTtlSeconds = this.configService.get<number>('cache.ttl_seconds');
-
   constructor(
-    private readonly configService: ConfigService,
+    protected readonly configService: ConfigService,
     private readonly planetsService: PlanetsService,
     private readonly filmsService: FilmsService,
     private readonly cacheService: CacheService,
   ) {
-    super(Resource.Planets);
+    super(configService, Resource.Planets);
   }
 
   @Query(() => [Planet], { name: 'planets' })

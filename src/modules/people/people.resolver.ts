@@ -27,10 +27,8 @@ import { ConfigService } from '@nestjs/config';
 
 @Resolver(() => People)
 export class PeopleResolver extends GenericEntityResolver {
-  cacheTtlSeconds = this.configService.get<number>('cache.ttl_seconds');
-
   constructor(
-    private readonly configService: ConfigService,
+    protected readonly configService: ConfigService,
     private readonly peopleService: PeopleService,
     private readonly filmsService: FilmsService,
     private readonly speciesService: SpeciesService,
@@ -38,7 +36,7 @@ export class PeopleResolver extends GenericEntityResolver {
     private readonly starshipsService: StarshipsService,
     protected readonly cacheService: CacheService,
   ) {
-    super(Resource.People);
+    super(configService, Resource.People);
   }
 
   @Query(() => [People], { name: 'people' })

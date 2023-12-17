@@ -15,9 +15,11 @@ export default () => ({
     url: process.env.SWAPI_URL,
   },
   default: {
+    search: process.env.DEFAULT_SEARCH || '',
     pagination: {
       skip: parseInt(process.env.DEFAULT_PAGINATION_SKIP, 10) || 0,
       take: parseInt(process.env.DEFAULT_PAGINATION_TAKE, 10) || 10,
+      takeMax: parseInt(process.env.DEFAULT_PAGINATION_TAKE_MAX, 10) || 100,
     },
   },
 });
