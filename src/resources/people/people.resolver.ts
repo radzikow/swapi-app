@@ -35,7 +35,10 @@ export class PeopleResolver extends GenericEntityResolver {
     super(configService, cacheService, Resource.People);
   }
 
-  @Query(() => [People], { name: QueryName.People })
+  @Query(() => [People], {
+    name: QueryName.People,
+    description: 'Get all people',
+  })
   async getPeople(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
@@ -54,7 +57,10 @@ export class PeopleResolver extends GenericEntityResolver {
     return results;
   }
 
-  @Query(() => People, { name: QueryName.Person })
+  @Query(() => People, {
+    name: QueryName.Person,
+    description: 'Get person by id',
+  })
   async getPeopleById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<People> {

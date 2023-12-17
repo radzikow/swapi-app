@@ -26,7 +26,10 @@ export class SpeciesResolver extends GenericEntityResolver {
     super(configService, cacheService, Resource.Species);
   }
 
-  @Query(() => [Species], { name: QueryName.Species })
+  @Query(() => [Species], {
+    name: QueryName.Species,
+    description: 'Get all species',
+  })
   async getSpecies(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
@@ -45,7 +48,10 @@ export class SpeciesResolver extends GenericEntityResolver {
     return results;
   }
 
-  @Query(() => Species, { name: QueryName.Specie })
+  @Query(() => Species, {
+    name: QueryName.Specie,
+    description: 'Get species by id',
+  })
   async getSpeciesById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Species> {

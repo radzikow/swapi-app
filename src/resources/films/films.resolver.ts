@@ -44,7 +44,7 @@ export class FilmsResolver extends GenericEntityResolver {
     super(configService, cacheService, Resource.Films);
   }
 
-  @Query(() => [Film], { name: QueryName.Films })
+  @Query(() => [Film], { name: QueryName.Films, description: 'Get all films' })
   async getFilms(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
@@ -63,7 +63,7 @@ export class FilmsResolver extends GenericEntityResolver {
     return results;
   }
 
-  @Query(() => Film, { name: QueryName.Film })
+  @Query(() => Film, { name: QueryName.Film, description: 'Get film by id' })
   async getFilmById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Film> {
@@ -116,7 +116,10 @@ export class FilmsResolver extends GenericEntityResolver {
     );
   }
 
-  @Query(() => [WordOccurrence], { name: QueryName.UniqueWords })
+  @Query(() => [WordOccurrence], {
+    name: QueryName.UniqueWords,
+    description: 'Get unique words in opening crawls',
+  })
   async getUniqueWordsInOpeningCrawls(): Promise<WordOccurrence[]> {
     const cacheKey = `${QueryName.UniqueWords}`;
     const cachedData = await this.cacheService.get<WordOccurrence[]>(cacheKey);
@@ -136,6 +139,7 @@ export class FilmsResolver extends GenericEntityResolver {
 
   @Query(() => [CharacterOccurrence], {
     name: QueryName.MostFrequentCharacterNames,
+    description: 'Get most frequent character names in opening crawls',
   })
   async getMostFrequentCharacterNamesInOpeningCrawls(): Promise<
     CharacterOccurrence[]

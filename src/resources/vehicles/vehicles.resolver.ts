@@ -26,7 +26,10 @@ export class VehiclesResolver extends GenericEntityResolver {
     super(configService, cacheService, Resource.Vehicles);
   }
 
-  @Query(() => [Vehicle], { name: QueryName.Vehicles })
+  @Query(() => [Vehicle], {
+    name: QueryName.Vehicles,
+    description: 'Get all vehicles',
+  })
   async getVehicles(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 })
@@ -46,7 +49,10 @@ export class VehiclesResolver extends GenericEntityResolver {
     return results;
   }
 
-  @Query(() => Vehicle, { name: QueryName.Vehicle })
+  @Query(() => Vehicle, {
+    name: QueryName.Vehicle,
+    description: 'Get vehicle by id',
+  })
   async getVehicleById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Vehicle> {

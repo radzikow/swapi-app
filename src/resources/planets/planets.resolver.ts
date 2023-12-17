@@ -29,7 +29,10 @@ export class PlanetsResolver extends GenericEntityResolver {
     super(configService, cacheService, Resource.Planets);
   }
 
-  @Query(() => [Planet], { name: QueryName.Planets })
+  @Query(() => [Planet], {
+    name: QueryName.Planets,
+    description: 'Get all planets',
+  })
   async getPlanets(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
@@ -48,7 +51,10 @@ export class PlanetsResolver extends GenericEntityResolver {
     return results;
   }
 
-  @Query(() => Planet, { name: QueryName.Planet })
+  @Query(() => Planet, {
+    name: QueryName.Planet,
+    description: 'Get planet by id',
+  })
   async getPlanetById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Planet> {

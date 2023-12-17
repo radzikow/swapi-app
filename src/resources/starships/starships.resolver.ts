@@ -26,7 +26,10 @@ export class StarshipsResolver extends GenericEntityResolver {
     super(configService, cacheService, Resource.Starships);
   }
 
-  @Query(() => [Starship], { name: QueryName.Starships })
+  @Query(() => [Starship], {
+    name: QueryName.Starships,
+    description: 'Get all starships',
+  })
   async getStarships(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
@@ -45,7 +48,10 @@ export class StarshipsResolver extends GenericEntityResolver {
     return results;
   }
 
-  @Query(() => Starship, { name: QueryName.Starship })
+  @Query(() => Starship, {
+    name: QueryName.Starship,
+    description: 'Get starship by id',
+  })
   async getStarshipById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Starship> {
