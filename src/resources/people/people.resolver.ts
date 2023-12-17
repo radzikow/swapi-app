@@ -19,10 +19,6 @@ import { StarshipsService } from '../starships/starships.service';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { CacheService } from '../../shared/cache/cache.service';
-import {
-  getCachedData,
-  setDataInCache,
-} from '../../common/utilities/cache.utility';
 import { ConfigService } from '@nestjs/config';
 
 @Resolver(() => People)
@@ -46,31 +42,16 @@ export class PeopleResolver extends GenericEntityResolver {
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<People[]> {
     const cacheKey = `${QueryName.People}:${search}:${skip}:${take}`;
-    const cachedData = await getCachedData<People[]>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<People[]>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as People[];
     }
 
-    const { results: data } = await this.peopleService.getAll(
-      search,
-      skip,
-      take,
-    );
+    const { results } = await this.peopleService.getAll(search, skip, take);
+    await this.cacheService.set(cacheKey, results, this.cacheTtlSeconds);
 
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
-
-    return data;
+    return results;
   }
 
   @Query(() => People, { name: QueryName.Person })
@@ -78,25 +59,14 @@ export class PeopleResolver extends GenericEntityResolver {
     @Args('id', { type: () => Int }) id: number,
   ): Promise<People> {
     const cacheKey = `${QueryName.Person}:${id}`;
-    const cachedData = await getCachedData<People>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<People>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as People;
     }
 
     const data = await this.peopleService.getById(id);
-
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
+    await this.cacheService.set(cacheKey, data, this.cacheTtlSeconds);
 
     return data;
   }

@@ -13,10 +13,6 @@ import { Film } from '../films/entities/film.entity';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { CacheService } from '../../shared/cache/cache.service';
-import {
-  getCachedData,
-  setDataInCache,
-} from '../../common/utilities/cache.utility';
 import { ConfigService } from '@nestjs/config';
 
 @Resolver(() => Vehicle)
@@ -38,31 +34,16 @@ export class VehiclesResolver extends GenericEntityResolver {
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Vehicle[]> {
     const cacheKey = `${QueryName.Vehicles}:${search}:${skip}:${take}`;
-    const cachedData = await getCachedData<Vehicle[]>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<Vehicle[]>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as Vehicle[];
     }
 
-    const { results: data } = await this.vehiclesService.getAll(
-      search,
-      skip,
-      take,
-    );
+    const { results } = await this.vehiclesService.getAll(search, skip, take);
+    await this.cacheService.set(cacheKey, results, this.cacheTtlSeconds);
 
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
-
-    return data;
+    return results;
   }
 
   @Query(() => Vehicle, { name: QueryName.Vehicle })
@@ -70,25 +51,14 @@ export class VehiclesResolver extends GenericEntityResolver {
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Vehicle> {
     const cacheKey = `${QueryName.Vehicle}:${id}`;
-    const cachedData = await getCachedData<Vehicle>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<Vehicle>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as Vehicle;
     }
 
     const data = this.vehiclesService.getById(id);
-
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
+    await this.cacheService.set(cacheKey, data, this.cacheTtlSeconds);
 
     return data;
   }

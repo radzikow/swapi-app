@@ -12,10 +12,6 @@ import { Film } from '../films/entities/film.entity';
 import { FilmsService } from '../films/films.service';
 import { CacheService } from '../../shared/cache/cache.service';
 import { QueryName, Resource } from '../../common/enums/resource.enum';
-import {
-  getCachedData,
-  setDataInCache,
-} from '../../common/utilities/cache.utility';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import { ConfigService } from '@nestjs/config';
 
@@ -37,31 +33,16 @@ export class PlanetsResolver extends GenericEntityResolver {
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Planet[]> {
     const cacheKey = `${QueryName.Planets}:${search}:${skip}:${take}`;
-    const cachedData = await getCachedData<Planet[]>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<Planet[]>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as Planet[];
     }
 
-    const { results: data } = await this.planetsService.getAll(
-      search,
-      skip,
-      take,
-    );
+    const { results } = await this.planetsService.getAll(search, skip, take);
+    await this.cacheService.set(cacheKey, results, this.cacheTtlSeconds);
 
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
-
-    return data;
+    return results;
   }
 
   @Query(() => Planet, { name: QueryName.Planet })
@@ -69,25 +50,14 @@ export class PlanetsResolver extends GenericEntityResolver {
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Planet> {
     const cacheKey = `${QueryName.Planet}:${id}`;
-    const cachedData = await getCachedData<Planet>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<Planet>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as Planet;
     }
 
     const data = await this.planetsService.getById(id);
-
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
+    await this.cacheService.set(cacheKey, data, this.cacheTtlSeconds);
 
     return data;
   }

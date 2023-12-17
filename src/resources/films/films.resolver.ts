@@ -17,10 +17,6 @@ import {
 } from './utilities/films.utility';
 import { WordOccurrence } from './entities/word-occurrence.entity';
 import { CacheService } from '../../shared/cache/cache.service';
-import {
-  getCachedData,
-  setDataInCache,
-} from '../../common/utilities/cache.utility';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { ConfigService } from '@nestjs/config';
@@ -46,32 +42,16 @@ export class FilmsResolver extends GenericEntityResolver {
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Film[]> {
     const cacheKey = `${QueryName.Films}:${search}:${skip}:${take}`;
-
-    const cachedData = await getCachedData<Film[]>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<Film[]>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as Film[];
     }
 
-    const { results: data } = await this.filmsService.getAll(
-      search,
-      skip,
-      take,
-    );
+    const { results } = await this.filmsService.getAll(search, skip, take);
+    await this.cacheService.set(cacheKey, results, this.cacheTtlSeconds);
 
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
-
-    return data;
+    return results;
   }
 
   @Query(() => Film, { name: QueryName.Film })
@@ -79,26 +59,14 @@ export class FilmsResolver extends GenericEntityResolver {
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Film> {
     const cacheKey = `${QueryName.Film}:${id}`;
-
-    const cachedData = await getCachedData<Film>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<Film>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as Film;
     }
 
     const data = await this.filmsService.getById(id);
-
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
+    await this.cacheService.set(cacheKey, data, this.cacheTtlSeconds);
 
     return data;
   }
@@ -114,28 +82,17 @@ export class FilmsResolver extends GenericEntityResolver {
   @Query(() => [WordOccurrence], { name: QueryName.UniqueWords })
   async getUniqueWordsInOpeningCrawls(): Promise<WordOccurrence[]> {
     const cacheKey = `${QueryName.UniqueWords}`;
-    const cachedData = await getCachedData<WordOccurrence[]>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<WordOccurrence[]>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as WordOccurrence[];
     }
 
     const openingCrawls = await this.filmsService.getOpeningCrawls();
-
     const uniqueWords =
       getUniqueWordsWithOccurrencesFromOpeningCrawls(openingCrawls);
 
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      uniqueWords,
-      this.cacheTtlSeconds,
-    );
+    await this.cacheService.set(cacheKey, uniqueWords, this.cacheTtlSeconds);
 
     return uniqueWords;
   }
@@ -147,14 +104,11 @@ export class FilmsResolver extends GenericEntityResolver {
     CharacterOccurrence[]
   > {
     const cacheKey = `${QueryName.MostFrequentCharacterNames}`;
-    const cachedData = await getCachedData<CharacterOccurrence[]>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData =
+      await this.cacheService.get<CharacterOccurrence[]>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as CharacterOccurrence[];
     }
 
     const allCharactersNames = await this.peopleService.getCharacterNames();
@@ -171,9 +125,7 @@ export class FilmsResolver extends GenericEntityResolver {
       characterNamesFromOpeningCrawls,
     );
 
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
+    await this.cacheService.set(
       cacheKey,
       mostFrequentNames,
       this.cacheTtlSeconds,

@@ -13,10 +13,6 @@ import { FilmsService } from '../films/films.service';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { CacheService } from '../../shared/cache/cache.service';
-import {
-  getCachedData,
-  setDataInCache,
-} from '../../common/utilities/cache.utility';
 import { ConfigService } from '@nestjs/config';
 
 @Resolver(() => Species)
@@ -37,32 +33,16 @@ export class SpeciesResolver extends GenericEntityResolver {
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Species[]> {
     const cacheKey = `${QueryName.Species}:${search}:${skip}:${take}`;
-
-    const cachedData = await getCachedData<Species[]>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<Species[]>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as Species[];
     }
 
-    const { results: data } = await this.speciesService.getAll(
-      search,
-      skip,
-      take,
-    );
+    const { results } = await this.speciesService.getAll(search, skip, take);
+    await this.cacheService.set(cacheKey, results, this.cacheTtlSeconds);
 
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
-
-    return data;
+    return results;
   }
 
   @Query(() => Species, { name: QueryName.Specie })
@@ -70,25 +50,14 @@ export class SpeciesResolver extends GenericEntityResolver {
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Species> {
     const cacheKey = `${QueryName.Specie}:${id}`;
-    const cachedData = await getCachedData<Species>(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-    );
+    const cachedData = await this.cacheService.get<Species>(cacheKey);
 
     if (cachedData) {
-      return cachedData;
+      return cachedData as unknown as Species;
     }
 
     const data = await this.speciesService.getById(id);
-
-    await setDataInCache(
-      this.cacheService,
-      this.logger,
-      cacheKey,
-      data,
-      this.cacheTtlSeconds,
-    );
+    await this.cacheService.set(cacheKey, data, this.cacheTtlSeconds);
 
     return data;
   }
