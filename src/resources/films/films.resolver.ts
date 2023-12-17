@@ -22,7 +22,7 @@ import {
   setDataInCache,
 } from '../../common/utilities/cache.utility';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
-import { Resource } from '../../common/enums/resource.enum';
+import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { ConfigService } from '@nestjs/config';
 import { PeopleService } from '../people/people.service';
 import { CharacterOccurrence } from './entities/character-occurrence.entity';
@@ -39,13 +39,13 @@ export class FilmsResolver extends GenericEntityResolver {
     super(configService, Resource.Films);
   }
 
-  @Query(() => [Film], { name: 'films' })
+  @Query(() => [Film], { name: QueryName.Films })
   async getFilms(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Film[]> {
-    const cacheKey = `films:${search}:${skip}:${take}`;
+    const cacheKey = `${QueryName.Films}:${search}:${skip}:${take}`;
 
     const cachedData = await getCachedData<Film[]>(
       this.cacheService,
@@ -74,11 +74,11 @@ export class FilmsResolver extends GenericEntityResolver {
     return data;
   }
 
-  @Query(() => Film, { name: 'film' })
+  @Query(() => Film, { name: QueryName.Film })
   async getFilmById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Film> {
-    const cacheKey = `film:${id}`;
+    const cacheKey = `${QueryName.Film}:${id}`;
 
     const cachedData = await getCachedData<Film>(
       this.cacheService,
@@ -103,7 +103,7 @@ export class FilmsResolver extends GenericEntityResolver {
     return data;
   }
 
-  @ResolveField(() => [Species], { name: 'species' })
+  @ResolveField(() => [Species], { name: QueryName.Species })
   async species(@Parent() film: Film): Promise<Species[]> {
     return this.resolveEntities<Species>(
       film.species as unknown as string[],
@@ -111,9 +111,9 @@ export class FilmsResolver extends GenericEntityResolver {
     );
   }
 
-  @Query(() => [WordOccurrence], { name: 'uniqueWordsInOpeningCrawls' })
+  @Query(() => [WordOccurrence], { name: QueryName.UniqueWords })
   async getUniqueWordsInOpeningCrawls(): Promise<WordOccurrence[]> {
-    const cacheKey = `uniqueWordsInOpeningCrawls`;
+    const cacheKey = `${QueryName.UniqueWords}`;
     const cachedData = await getCachedData<WordOccurrence[]>(
       this.cacheService,
       this.logger,
@@ -141,12 +141,12 @@ export class FilmsResolver extends GenericEntityResolver {
   }
 
   @Query(() => [CharacterOccurrence], {
-    name: 'mostFrequentCharacterNamesInOpeningCrawls',
+    name: QueryName.MostFrequentCharacterNames,
   })
   async getMostFrequentCharacterNamesInOpeningCrawls(): Promise<
     CharacterOccurrence[]
   > {
-    const cacheKey = `mostFrequentCharacterNamesInOpeningCrawls`;
+    const cacheKey = `${QueryName.MostFrequentCharacterNames}`;
     const cachedData = await getCachedData<CharacterOccurrence[]>(
       this.cacheService,
       this.logger,

@@ -17,7 +17,7 @@ import { VehiclesService } from '../vehicles/vehicles.service';
 import { Starship } from '../starships/entities/starship.entity';
 import { StarshipsService } from '../starships/starships.service';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
-import { Resource } from '../../common/enums/resource.enum';
+import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { CacheService } from '../../shared/cache/cache.service';
 import {
   getCachedData,
@@ -39,13 +39,13 @@ export class PeopleResolver extends GenericEntityResolver {
     super(configService, Resource.People);
   }
 
-  @Query(() => [People], { name: 'people' })
+  @Query(() => [People], { name: QueryName.People })
   async getPeople(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<People[]> {
-    const cacheKey = `people:${search}:${skip}:${take}`;
+    const cacheKey = `${QueryName.People}:${search}:${skip}:${take}`;
     const cachedData = await getCachedData<People[]>(
       this.cacheService,
       this.logger,
@@ -73,11 +73,11 @@ export class PeopleResolver extends GenericEntityResolver {
     return data;
   }
 
-  @Query(() => People, { name: 'person' })
+  @Query(() => People, { name: QueryName.Person })
   async getPeopleById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<People> {
-    const cacheKey = `person:${id}`;
+    const cacheKey = `${QueryName.Person}:${id}`;
     const cachedData = await getCachedData<People>(
       this.cacheService,
       this.logger,
@@ -101,7 +101,7 @@ export class PeopleResolver extends GenericEntityResolver {
     return data;
   }
 
-  @ResolveField(() => [Film], { name: 'films' })
+  @ResolveField(() => [Film], { name: QueryName.Films })
   async films(@Parent() people: People): Promise<Film[]> {
     return this.resolveEntities<Film>(
       people.films as unknown as string[],
@@ -109,7 +109,7 @@ export class PeopleResolver extends GenericEntityResolver {
     );
   }
 
-  @ResolveField(() => [Species], { name: 'species' })
+  @ResolveField(() => [Species], { name: QueryName.Species })
   async species(@Parent() people: People): Promise<Species[]> {
     return this.resolveEntities<Species>(
       people.species as unknown as string[],
@@ -117,7 +117,7 @@ export class PeopleResolver extends GenericEntityResolver {
     );
   }
 
-  @ResolveField(() => [Vehicle], { name: 'vehicles' })
+  @ResolveField(() => [Vehicle], { name: QueryName.Vehicles })
   async vehicles(@Parent() people: People): Promise<Vehicle[]> {
     return this.resolveEntities<Vehicle>(
       people.vehicles as unknown as string[],
@@ -125,7 +125,7 @@ export class PeopleResolver extends GenericEntityResolver {
     );
   }
 
-  @ResolveField(() => [Starship], { name: 'starships' })
+  @ResolveField(() => [Starship], { name: QueryName.Starships })
   async starships(@Parent() people: People): Promise<Starship[]> {
     return this.resolveEntities<Starship>(
       people.starships as unknown as string[],

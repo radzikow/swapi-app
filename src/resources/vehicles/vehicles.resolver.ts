@@ -11,7 +11,7 @@ import { Vehicle } from './entities/vehicle.entity';
 import { FilmsService } from '../films/films.service';
 import { Film } from '../films/entities/film.entity';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
-import { Resource } from '../../common/enums/resource.enum';
+import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { CacheService } from '../../shared/cache/cache.service';
 import {
   getCachedData,
@@ -30,14 +30,14 @@ export class VehiclesResolver extends GenericEntityResolver {
     super(configService, Resource.Vehicles);
   }
 
-  @Query(() => [Vehicle], { name: 'vehicles' })
+  @Query(() => [Vehicle], { name: QueryName.Vehicles })
   async getVehicles(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 })
     skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Vehicle[]> {
-    const cacheKey = `vehicles:${search}:${skip}:${take}`;
+    const cacheKey = `${QueryName.Vehicles}:${search}:${skip}:${take}`;
     const cachedData = await getCachedData<Vehicle[]>(
       this.cacheService,
       this.logger,
@@ -65,11 +65,11 @@ export class VehiclesResolver extends GenericEntityResolver {
     return data;
   }
 
-  @Query(() => Vehicle, { name: 'vehicle' })
+  @Query(() => Vehicle, { name: QueryName.Vehicle })
   async getVehicleById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Vehicle> {
-    const cacheKey = `vehicle:${id}`;
+    const cacheKey = `${QueryName.Vehicle}:${id}`;
     const cachedData = await getCachedData<Vehicle>(
       this.cacheService,
       this.logger,
@@ -93,7 +93,7 @@ export class VehiclesResolver extends GenericEntityResolver {
     return data;
   }
 
-  @ResolveField(() => [Film], { name: 'films' })
+  @ResolveField(() => [Film], { name: QueryName.Films })
   async films(@Parent() vehicle: Vehicle): Promise<Film[]> {
     return this.resolveEntities<Film>(
       vehicle.films as unknown as string[],

@@ -11,7 +11,7 @@ import { Species } from './entities/species.entity';
 import { Film } from '../films/entities/film.entity';
 import { FilmsService } from '../films/films.service';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
-import { Resource } from '../../common/enums/resource.enum';
+import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { CacheService } from '../../shared/cache/cache.service';
 import {
   getCachedData,
@@ -30,13 +30,13 @@ export class SpeciesResolver extends GenericEntityResolver {
     super(configService, Resource.Species);
   }
 
-  @Query(() => [Species], { name: 'species' })
+  @Query(() => [Species], { name: QueryName.Species })
   async getSpecies(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Species[]> {
-    const cacheKey = `species:${search}:${skip}:${take}`;
+    const cacheKey = `${QueryName.Species}:${search}:${skip}:${take}`;
 
     const cachedData = await getCachedData<Species[]>(
       this.cacheService,
@@ -65,11 +65,11 @@ export class SpeciesResolver extends GenericEntityResolver {
     return data;
   }
 
-  @Query(() => Species, { name: 'specie' })
+  @Query(() => Species, { name: QueryName.Specie })
   async getSpeciesById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Species> {
-    const cacheKey = `specie:${id}`;
+    const cacheKey = `${QueryName.Specie}:${id}`;
     const cachedData = await getCachedData<Species>(
       this.cacheService,
       this.logger,
@@ -93,7 +93,7 @@ export class SpeciesResolver extends GenericEntityResolver {
     return data;
   }
 
-  @ResolveField(() => [Film], { name: 'films' })
+  @ResolveField(() => [Film], { name: QueryName.Films })
   async films(@Parent() species: Species): Promise<Film[]> {
     return this.resolveEntities<Film>(
       species.films as unknown as string[],

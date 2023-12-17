@@ -10,7 +10,7 @@ import { StarshipsService } from './starships.service';
 import { FilmsService } from '../films/films.service';
 import { Starship } from './entities/starship.entity';
 import { Film } from '../films/entities/film.entity';
-import { Resource } from '../../common/enums/resource.enum';
+import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { CacheService } from '../../shared/cache/cache.service';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import {
@@ -30,13 +30,13 @@ export class StarshipsResolver extends GenericEntityResolver {
     super(configService, Resource.Starships);
   }
 
-  @Query(() => [Starship], { name: 'starships' })
+  @Query(() => [Starship], { name: QueryName.Starships })
   async getStarships(
     @Args('search', { defaultValue: '' }) search: string,
     @Args('skip', { type: () => Int, defaultValue: 0 }) skip: number,
     @Args('take', { type: () => Int, defaultValue: 10 }) take: number,
   ): Promise<Starship[]> {
-    const cacheKey = `starships:${search}:${skip}:${take}`;
+    const cacheKey = `${QueryName.Starships}:${search}:${skip}:${take}`;
     const cachedData = await getCachedData<Starship[]>(
       this.cacheService,
       this.logger,
@@ -64,11 +64,11 @@ export class StarshipsResolver extends GenericEntityResolver {
     return data;
   }
 
-  @Query(() => Starship, { name: 'starship' })
+  @Query(() => Starship, { name: QueryName.Starship })
   async getStarshipById(
     @Args('id', { type: () => Int }) id: number,
   ): Promise<Starship> {
-    const cacheKey = `starship:${id}`;
+    const cacheKey = `${QueryName.Starship}:${id}`;
     const cachedData = await getCachedData<Starship>(
       this.cacheService,
       this.logger,
@@ -92,7 +92,7 @@ export class StarshipsResolver extends GenericEntityResolver {
     return data;
   }
 
-  @ResolveField(() => [Film], { name: 'films' })
+  @ResolveField(() => [Film], { name: QueryName.Films })
   async films(@Parent() starship: Starship): Promise<Film[]> {
     return this.resolveEntities<Film>(
       starship.films as unknown as string[],
