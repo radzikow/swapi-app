@@ -80,7 +80,9 @@ The application utilizes environment variables for configuration. Key environmen
 ## GraphQL Endpoints
 The NestJS Swapi App provides several GraphQL endpoints to interact with the Star Wars data. Below is a description of each available endpoint:
 
-> **_NOTE:_**  You can test queries using the GraphQL Playground that NestJS provides which is usually available at http://localhost:3000/graphql. The exact URL may vary depending on your NestJS configuration.
+> **_NOTE:_** You can test queries using the GraphQL Playground that NestJS provides which is usually available at http://localhost:3000/graphql. The exact URL may vary depending on your NestJS configuration.
+
+> **_NOTE:_** When initiating and launching a project, you can review GraphQL types in the auto-generated schema.gql file.
 
 ### `films` Query
 <details>
