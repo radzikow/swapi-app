@@ -131,10 +131,6 @@ export class GenericEntityService<T> {
             };
             return formattedResponse;
           }),
-          catchError((error: AxiosError) => {
-            this.logger.error(error.response.data);
-            throw `An error happened while fetching ${this.entityName}!`;
-          }),
         ),
     );
   }

@@ -6,10 +6,11 @@ import { CachedData } from './dto/cached-data.dto';
 
 @Injectable()
 export class CacheService {
+  private readonly logger = new Logger(CacheService.name);
+
   constructor(
     @InjectModel(CachedResource.name)
     private readonly cacheModel: Model<CachedResource>,
-    private readonly logger: Logger,
   ) {}
 
   async get<T>(key: string): Promise<CachedData<T> | null> {

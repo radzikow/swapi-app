@@ -22,17 +22,26 @@ import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { ConfigService } from '@nestjs/config';
 import { PeopleService } from '../people/people.service';
 import { CharacterOccurrence } from './entities/character-occurrence.entity';
+import { Planet } from '../planets/entities/planet.entity';
+import { PlanetsService } from '../planets/planets.service';
+import { Starship } from '../starships/entities/starship.entity';
+import { StarshipsService } from '../starships/starships.service';
+import { Vehicle } from '../vehicles/entities/vehicle.entity';
+import { VehiclesService } from '../vehicles/vehicles.service';
 
 @Resolver(() => Film)
 export class FilmsResolver extends GenericEntityResolver {
   constructor(
     protected readonly configService: ConfigService,
+    protected readonly cacheService: CacheService,
     private readonly filmsService: FilmsService,
     private readonly speciesService: SpeciesService,
     private readonly peopleService: PeopleService,
-    protected readonly cacheService: CacheService,
+    private readonly planetsService: PlanetsService,
+    private readonly starshipsService: StarshipsService,
+    private readonly vehiclesService: VehiclesService,
   ) {
-    super(configService, Resource.Films);
+    super(configService, cacheService, Resource.Films);
   }
 
   @Query(() => [Film], { name: QueryName.Films })
@@ -71,11 +80,39 @@ export class FilmsResolver extends GenericEntityResolver {
     return data;
   }
 
+  @ResolveField(() => [Planet], { name: QueryName.Planets })
+  async planets(@Parent() film: Film): Promise<Planet[]> {
+    return this.resolveEntities<Planet>(
+      film.planets as unknown as string[],
+      this.planetsService.getById.bind(this.planetsService),
+      QueryName.Planet,
+    );
+  }
+
+  @ResolveField(() => [Starship], { name: QueryName.Starships })
+  async starships(@Parent() film: Film): Promise<Starship[]> {
+    return this.resolveEntities<Starship>(
+      film.starships as unknown as string[],
+      this.starshipsService.getById.bind(this.starshipsService),
+      QueryName.Starship,
+    );
+  }
+
+  @ResolveField(() => [Vehicle], { name: QueryName.Vehicles })
+  async vehicles(@Parent() film: Film): Promise<Vehicle[]> {
+    return this.resolveEntities<Vehicle>(
+      film.vehicles as unknown as string[],
+      this.vehiclesService.getById.bind(this.vehiclesService),
+      QueryName.Vehicle,
+    );
+  }
+
   @ResolveField(() => [Species], { name: QueryName.Species })
   async species(@Parent() film: Film): Promise<Species[]> {
     return this.resolveEntities<Species>(
       film.species as unknown as string[],
       this.speciesService.getById.bind(this.speciesService),
+      QueryName.Specie,
     );
   }
 

@@ -19,11 +19,11 @@ import { ConfigService } from '@nestjs/config';
 export class StarshipsResolver extends GenericEntityResolver {
   constructor(
     protected readonly configService: ConfigService,
+    protected readonly cacheService: CacheService,
     private readonly starshipsService: StarshipsService,
     private readonly filmsService: FilmsService,
-    protected readonly cacheService: CacheService,
   ) {
-    super(configService, Resource.Starships);
+    super(configService, cacheService, Resource.Starships);
   }
 
   @Query(() => [Starship], { name: QueryName.Starships })
@@ -67,6 +67,7 @@ export class StarshipsResolver extends GenericEntityResolver {
     return this.resolveEntities<Film>(
       starship.films as unknown as string[],
       this.filmsService.getById.bind(this.filmsService),
+      QueryName.Film,
     );
   }
 }

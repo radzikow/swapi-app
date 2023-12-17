@@ -137,7 +137,7 @@ query {
 
 </details>
 
-### `uniqueWordsInOpeningCrawls` Query
+### `uniqueWords` Query
 <details>
   <summary>Show details</summary>
   <br/>
@@ -150,7 +150,7 @@ Retrieve unique words and their occurrences from the opening crawls of all films
 
 ```gql
 query {
-  uniqueWordsInOpeningCrawls {
+  uniqueWords {
     word,
     occurrences
   }
@@ -159,7 +159,7 @@ query {
 
 </details>
 
-### `mostFrequentCharacterNamesInOpeningCrawls` Query
+### `mostFrequentCharacterNames` Query
 <details>
   <summary>Show details</summary>
   <br/>
@@ -172,7 +172,7 @@ Retrieve the most frequent character names and their occurrences from the openin
 
 ```gql
 query {
-  mostFrequentCharacterNamesInOpeningCrawls {
+  mostFrequentCharacterNames {
     name,
     occurrences
   }

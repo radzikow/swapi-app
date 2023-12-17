@@ -14,16 +14,19 @@ import { CacheService } from '../../shared/cache/cache.service';
 import { QueryName, Resource } from '../../common/enums/resource.enum';
 import { GenericEntityResolver } from '../../shared/generic-entity.resolver';
 import { ConfigService } from '@nestjs/config';
+import { People } from '../people/entities/people.entity';
+import { PeopleService } from '../people/people.service';
 
 @Resolver(() => Planet)
 export class PlanetsResolver extends GenericEntityResolver {
   constructor(
     protected readonly configService: ConfigService,
+    protected readonly cacheService: CacheService,
     private readonly planetsService: PlanetsService,
     private readonly filmsService: FilmsService,
-    private readonly cacheService: CacheService,
+    private readonly peopleService: PeopleService,
   ) {
-    super(configService, Resource.Planets);
+    super(configService, cacheService, Resource.Planets);
   }
 
   @Query(() => [Planet], { name: QueryName.Planets })
@@ -62,11 +65,21 @@ export class PlanetsResolver extends GenericEntityResolver {
     return data;
   }
 
+  @ResolveField(() => [People], { name: 'residents' })
+  async residents(@Parent() planet: Planet): Promise<People[]> {
+    return this.resolveEntities<People>(
+      planet.residents as unknown as string[],
+      this.peopleService.getById.bind(this.peopleService),
+      QueryName.Person,
+    );
+  }
+
   @ResolveField(() => [Film], { name: QueryName.Films })
   async films(@Parent() planet: Planet): Promise<Film[]> {
     return this.resolveEntities<Film>(
       planet.films as unknown as string[],
       this.filmsService.getById.bind(this.filmsService),
+      QueryName.Film,
     );
   }
 }

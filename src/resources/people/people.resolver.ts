@@ -25,14 +25,14 @@ import { ConfigService } from '@nestjs/config';
 export class PeopleResolver extends GenericEntityResolver {
   constructor(
     protected readonly configService: ConfigService,
+    protected readonly cacheService: CacheService,
     private readonly peopleService: PeopleService,
     private readonly filmsService: FilmsService,
     private readonly speciesService: SpeciesService,
     private readonly vehiclesService: VehiclesService,
     private readonly starshipsService: StarshipsService,
-    protected readonly cacheService: CacheService,
   ) {
-    super(configService, Resource.People);
+    super(configService, cacheService, Resource.People);
   }
 
   @Query(() => [People], { name: QueryName.People })
@@ -76,6 +76,7 @@ export class PeopleResolver extends GenericEntityResolver {
     return this.resolveEntities<Film>(
       people.films as unknown as string[],
       this.filmsService.getById.bind(this.filmsService),
+      QueryName.Film,
     );
   }
 
@@ -84,6 +85,7 @@ export class PeopleResolver extends GenericEntityResolver {
     return this.resolveEntities<Species>(
       people.species as unknown as string[],
       this.speciesService.getById.bind(this.speciesService),
+      QueryName.Specie,
     );
   }
 
@@ -92,6 +94,7 @@ export class PeopleResolver extends GenericEntityResolver {
     return this.resolveEntities<Vehicle>(
       people.vehicles as unknown as string[],
       this.vehiclesService.getById.bind(this.vehiclesService),
+      QueryName.Vehicle,
     );
   }
 
@@ -100,6 +103,7 @@ export class PeopleResolver extends GenericEntityResolver {
     return this.resolveEntities<Starship>(
       people.starships as unknown as string[],
       this.starshipsService.getById.bind(this.starshipsService),
+      QueryName.Starship,
     );
   }
 }

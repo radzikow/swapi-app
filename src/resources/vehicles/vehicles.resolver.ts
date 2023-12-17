@@ -19,11 +19,11 @@ import { ConfigService } from '@nestjs/config';
 export class VehiclesResolver extends GenericEntityResolver {
   constructor(
     protected readonly configService: ConfigService,
+    protected readonly cacheService: CacheService,
     private readonly vehiclesService: VehiclesService,
     private readonly filmsService: FilmsService,
-    protected readonly cacheService: CacheService,
   ) {
-    super(configService, Resource.Vehicles);
+    super(configService, cacheService, Resource.Vehicles);
   }
 
   @Query(() => [Vehicle], { name: QueryName.Vehicles })
@@ -68,6 +68,7 @@ export class VehiclesResolver extends GenericEntityResolver {
     return this.resolveEntities<Film>(
       vehicle.films as unknown as string[],
       this.filmsService.getById.bind(this.filmsService),
+      QueryName.Film,
     );
   }
 }

@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { VehiclesService } from './vehicles.service';
 import { VehiclesResolver } from './vehicles.resolver';
 import { HttpModule } from '@nestjs/axios';
 import { CacheModule } from '../../shared/cache/cache.module';
 
+@Global()
 @Module({
   imports: [HttpModule, CacheModule],
   providers: [VehiclesResolver, VehiclesService],
